@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server Monitoring Dashboard</title>
+</head>
+<body>
+    <h1>Server Ressurs Måler</h1>
+    <table border="1">
+        <tr>
+            <th>Tid</th>
+            <th>CPU (%)</th>
+            <th>Minne (%)</th>
+            <th>Disk (%)</th>
+            <th>Nettverk trafikk (bytes)</th>
+        </tr>
+        {% for metric in metrics %}
+        <tr>
+            <td>{{ metric.timestamp }}</td>
+            <td>{{ metric.cpu_usage }}</td>
+            <td>{{ metric.memory_usage }}</td>
+            <td>{{ metric.disk_usage }}</td>
+            <td>{{ metric.network_traffic }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
