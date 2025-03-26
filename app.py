@@ -16,7 +16,7 @@ class Metrics(db.Model):
 
 @app.route('/')
 def index():
-    metrics = Metrics.query.order_by(Metrics.timestamp.desc()).limit(10).all()  # Last 10 records
+    metrics = Metrics.query.order_by(Metrics.timestamp.desc()).limit(10).all()  # Siste 10 "records"
     return render_template('index.html', metrics=metrics)
 
 if __name__ == "__main__":
