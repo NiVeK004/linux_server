@@ -23,16 +23,6 @@ def index():
 # Ny API rute for systemstatistikk i "real-time"!
 @app.route('/system-stats')
 def system_stats():
-        stats = {
-            "cpu_usage": psutil.cpu_percent(interval=1),
-            "ram_usage": psutil.virtual_memory().percent,
-            "disk_usage": psutil.disk_usage('/').percent,
-        }
-        return stats
-
-# Ny API rute for systemstatistikk i "real-time"!
-@app.route('/system-stats')
-def system_stats():
 	stats = {
 	    "cpu_usage": psutil.cpu_percent(interval=1),
 	    "ram_usage": psutil.virtual_memory().percent,
