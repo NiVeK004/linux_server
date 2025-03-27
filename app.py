@@ -1,4 +1,5 @@
-  GNU nano 7.2                       app.py                                 from flask import Flask, render_template
+GNU nano 7.2
+from flask import Flask, render_template, jsonify
 from flask_sqlalchemy import SQLAlchemy
 import psycopg2
 import psutil # For systemstatistikk
@@ -28,6 +29,16 @@ def system_stats():
             "disk_usage": psutil.disk_usage('/').percent,
         }
         return stats
+
+# Ny API rute for systemstatistikk i "real-time"!
+@app.route('/system-stats')
+def system_stats():
+	stats = {
+	    "cpu_usage": psutil.cpu_percent(interval=1),
+	    "ram_usage": psutil.virtual_memory().percent,
+	    "disk_usage": psutil.disk_usage('/').percent,
+        }
+	return jsonify(stats)
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5000)
