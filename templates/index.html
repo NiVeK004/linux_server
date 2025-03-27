@@ -1,65 +1,75 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Server Ressursmåler</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <h1>Server Ressursmåler</h1>
-    <table border="1">
-        <tr>
-            <th>Tid</th>
-            <th>CPU (%)</th>
-            <th>Minne (%)</th>
-            <th>Disk (%)</th>
-            <th>Nettverk trafikk (bytes)</th>
-        </tr>
-        {% for metric in metrics %}
-        <tr>
-            <td>{{ metric.timestamp }}</td>
-            <td>{{ metric.cpu_usage }}</td>
-            <td>{{ metric.memory_usage }}</td>
-            <td>{{ metric.disk_usage }}</td>
-            <td>{{ metric.network_traffic }}</td>
-        </tr>
-        {% endfor %}
-    </table>
-<div class="bg-white p-4 rounded-lg shadow-lg mb-8">
-	<h2 class="text-2xl font-semibold text-blue-600 mb-4">Live statistikk</h2>
-	<p><strong>CPU Bruk:</strong> <span id="live-cpu">Laster...</span>%</p>
-	<p><strong>Minne Bruk:</strong> <span id="live-minne">Laster...</span>%</p>
-	<p><strong>Disk Bruk:</strong> <span id="live-disk">Laster...</span>%</p>
-</div>
+<body class="bg-gray-100 text-gray-900">
+    <div class="container mx-auto my-8 p-6 bg-white shadow-lg rounded-lg">
+        <h1 class="text-3xl font-bold text-blue-600 text-center mb-6">Server Ressursmåler</h1>
+        
+        <!-- Table for historical metrics -->
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-white border border-gray-300 shadow-md rounded-lg">
+                <thead>
+                    <tr class="bg-blue-500 text-white">
+                        <th class="py-2 px-4">Tid</th>
+                        <th class="py-2 px-4">CPU (%)</th>
+                        <th class="py-2 px-4">Minne (%)</th>
+                        <th class="py-2 px-4">Disk (%)</th>
+                        <th class="py-2 px-4">Nettverk (bytes)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for metric in metrics %}
+                    <tr class="border-b hover:bg-gray-100">
+                        <td class="py-2 px-4 text-center">{{ metric.timestamp }}</td>
+                        <td class="py-2 px-4 text-center">{{ metric.cpu_usage }}</td>
+                        <td class="py-2 px-4 text-center">{{ metric.memory_usage }}</td>
+                        <td class="py-2 px-4 text-center">{{ metric.disk_usage }}</td>
+                        <td class="py-2 px-4 text-center">{{ metric.network_traffic }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Live statistikk -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+            <div class="bg-blue-100 p-4 rounded-lg shadow">
+                <h2 class="text-xl font-semibold text-blue-600">CPU Bruk</h2>
+                <p class="text-2xl font-bold" id="live-cpu">Laster...</p>
+            </div>
+            <div class="bg-green-100 p-4 rounded-lg shadow">
+                <h2 class="text-xl font-semibold text-green-600">Minne Bruk</h2>
+                <p class="text-2xl font-bold" id="live-minne">Laster...</p>
+            </div>
+            <div class="bg-red-100 p-4 rounded-lg shadow">
+                <h2 class="text-xl font-semibold text-red-600">Disk Bruk</h2>
+                <p class="text-2xl font-bold" id="live-disk">Laster...</p>
+            </div>
+        </div>
+    </div>
 
- 
-<script>
-    // Funksjon som henter stats
-    async function hentLiveStats() {
-        try {
-            // Henter data fra /system-stats endpoint
-            const response = await fetch('/system-stats');
-            
-            // Sjekk om respons OK (status 200)
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
+    <script>
+        async function hentLiveStats() {
+            try {
+                const response = await fetch('/system-stats');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const data = await response.json();
+                document.getElementById('live-cpu').innerText = data.cpu_usage + '%';
+                document.getElementById('live-minne').innerText = data.ram_usage + '%';
+                document.getElementById('live-disk').innerText = data.disk_usage + '%';
+            } catch (error) {
+                console.error('Error fetching live stats:', error);
             }
-
-            // Venter på JSON respons 
-            const data = await response.json();
-
-            // Oppdatering av HTML
-            document.getElementById('live-cpu').innerText = data.cpu_usage;
-            document.getElementById('live-minne').innerText = data.ram_usage;
-            document.getElementById('live-disk').innerText = data.disk_usage;
-        } catch (error) {
-            console.error('Error fetching live stats:', error);
         }
-    }
-
-    // Hent data hvert 5 sekund
-    setInterval(hentLiveStats, 5000);
-    hentLiveStats(); // Første henting når siden laster
-</script>
+        setInterval(hentLiveStats, 5000);
+        hentLiveStats();
+    </script>
 </body>
 </html>
+
