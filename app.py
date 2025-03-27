@@ -23,6 +23,7 @@ def index():
     metrics = Metrics.query.order_by(Metrics.timestamp.desc()).limit(10).all() 
     return render_template('index.html', metrics=metrics)
 
+
 # Ny API rute for systemstatistikk i "real-time"!
 @app.route('/system-stats')
 def system_stats():
