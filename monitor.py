@@ -7,7 +7,7 @@ from datetime import datetime
 kobling = psycopg2.connect(
 	dbname="server_monitor",
 	user="monitor_admin",
-	password="nftn47",
+	password="*****",
 	host="localhost"
 )
 cursor = kobling.cursor()
