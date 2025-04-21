@@ -1,7 +1,7 @@
 from flask import Flask, render_template, jsonify
 from flask_sqlalchemy import SQLAlchemy
 import psycopg2
-import psutil # For systemstatistikk
+import psutil 
 from datetime import datetime
 
 app = Flask(__name__)
@@ -24,7 +24,7 @@ def index():
     return render_template('index.html', metrics=metrics)
 
 
-# Ny API rute for systemstatistikk i "real-time"!
+#statistikk 
 @app.route('/system-stats')
 def system_stats():
 	stats = {
